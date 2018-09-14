@@ -5,7 +5,7 @@ import com.example.inventory.dto.responses.InventoryDTO;
 import lombok.Data;
 
 @Data
-public class InventoryStagedEvent extends Event{
+public class InventoryStagedEvent extends BaseEvent{
 	public InventoryDTO inventoryDTO;
 	
 	public InventoryStagedEvent(InventoryDTO inventoryDTO) {

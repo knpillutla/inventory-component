@@ -7,7 +7,7 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
-import com.example.inventory.dto.events.Event;
+import com.example.inventory.dto.events.BaseEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +20,7 @@ public class EventPublisher {
 	        this.inventoryStreams = inventoryStreams;
 	    }
 
-	public void publish(Event event) {
+	public void publish(BaseEvent event) {
 		log.info("Sending event {}", event);
 		MessageChannel messageChannel = inventoryStreams.outboundInventory();
 		MessageHeaderAccessor msgHdrAccessor = new MessageHeaderAccessor();

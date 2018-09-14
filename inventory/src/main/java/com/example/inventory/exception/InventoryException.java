@@ -1,13 +1,13 @@
 package com.example.inventory.exception;
 
-import com.example.inventory.dto.events.Event;
+import com.example.inventory.dto.events.BaseEvent;
 
 import lombok.Data;
 
 @Data
 public class InventoryException extends Exception{
-	Event event = null;
-	public InventoryException(Event event) {
+	BaseEvent event = null;
+	public InventoryException(BaseEvent event) {
 		super(event.getErrorMsg());
 		this.event = event;
 	}

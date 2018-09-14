@@ -7,7 +7,7 @@ import com.example.inventory.dto.responses.InventoryDTO;
 import lombok.Data;
 
 @Data
-public class InventoryCreatedEvent extends Event{
+public class InventoryCreatedEvent extends BaseEvent{
 	public List<InventoryDTO> inventoryDTOList;
 	public InventoryCreatedEvent(List<InventoryDTO> inventoryDTOList) {
 		super("InventoryAvailableEvent");

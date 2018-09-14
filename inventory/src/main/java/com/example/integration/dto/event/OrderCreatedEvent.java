@@ -3,12 +3,12 @@ package com.example.integration.dto.event;
 import java.util.Map;
 
 import com.example.integration.dto.response.OrderDTO;
-import com.example.inventory.dto.events.Event;
+import com.example.inventory.dto.events.BaseEvent;
 
 import lombok.Data;
 
 @Data
-public class OrderCreatedEvent extends Event{
+public class OrderCreatedEvent extends BaseEvent{
 	public OrderCreatedEvent(OrderDTO orderDTO) {
 		super("OrderCreatedEvent", orderDTO);
 		this.addHeader("busName", orderDTO.getBusName());

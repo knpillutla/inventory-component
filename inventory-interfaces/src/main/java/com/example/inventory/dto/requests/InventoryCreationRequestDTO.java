@@ -1,11 +1,11 @@
 package com.example.inventory.dto.requests;
 
-import com.example.inventory.dto.BaseRequestDTO;
+import com.example.inventory.dto.BaseDTO;
 
 import lombok.Data;
 
 @Data
-public class InventoryCreationRequestDTO extends BaseRequestDTO{
+public class InventoryCreationRequestDTO extends BaseDTO{
 	public Integer busName;
 	public Integer locnNbr;
 	public String busUnit;

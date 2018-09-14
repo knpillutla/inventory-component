@@ -8,7 +8,7 @@ import com.example.inventory.dto.responses.InventoryDTO;
 import lombok.Data;
 
 @Data
-public class InSufficientInventoryEvent extends Event{
+public class InSufficientInventoryEvent extends BaseEvent{
 	public InSufficientInventoryEvent(List<InventoryReservationRequestDTO>invnResvReqList, InventoryReservationRequestDTO failedReq, String errorMsg) {
 		super("InSufficientInventoryEvent", invnResvReqList, failedReq, errorMsg);
 	}
