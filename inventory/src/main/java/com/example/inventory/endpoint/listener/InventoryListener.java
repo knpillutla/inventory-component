@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
-import com.example.integration.dto.event.OrderCreatedEvent;
-import com.example.integration.dto.response.OrderDTO;
 import com.example.inventory.dto.converter.OrderToInventoryDTOConverter;
 import com.example.inventory.service.InventoryService;
 import com.example.inventory.service.InventoryStreams;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.order.dto.events.OrderCreatedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +22,7 @@ public class InventoryListener {
 	
 	@StreamListener(InventoryStreams.ORDERS_OUTPUT)
 	public void handleIncomingOrders(OrderCreatedEvent orderCreatedEvent) {
-		log.info("Inventory Service, Received Msg: {}" + ": at :" + new java.util.Date(), orderCreatedEvent);
+		log.info("Inventory Service, Received Msg: {}" + ": at :" + new java.util.Date(), orderCreatedEvent.toString());
 		long startTime = System.currentTimeMillis();
 		try {
 			inventoryService.reserveInventory(orderToInvnConvertor.createInvResvReq(orderCreatedEvent));

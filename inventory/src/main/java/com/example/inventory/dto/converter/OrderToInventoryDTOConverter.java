@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.example.integration.dto.event.OrderCreatedEvent;
-import com.example.integration.dto.response.OrderDTO;
-import com.example.integration.dto.response.OrderLineDTO;
 import com.example.inventory.dto.requests.InventoryReservationRequestDTO;
+import com.example.order.dto.events.OrderCreatedEvent;
+import com.example.order.dto.responses.OrderDTO;
+import com.example.order.dto.responses.OrderLineDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
