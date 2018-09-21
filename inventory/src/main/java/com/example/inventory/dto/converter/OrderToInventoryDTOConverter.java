@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class OrderToInventoryDTOConverter {
 	
 	public List<InventoryReservationRequestDTO> createInvResvReq(OrderCreatedEvent orderCreatedEvent) {
-		ObjectMapper mapper = new ObjectMapper();
-		OrderDTO orderDTO = mapper.convertValue(orderCreatedEvent.getRequestObj(), OrderDTO.class);
+		//ObjectMapper mapper = new ObjectMapper();
+		//OrderDTO orderDTO = mapper.convertValue(orderCreatedEvent.getRequestObj(), OrderDTO.class);
 		List<InventoryReservationRequestDTO> invnResvReqList = new ArrayList();
 /*		for(OrderLineDTO orderLineDTO : orderDTO.getOrderLines()) {
 			InventoryReservationRequestDTO invResvReqDTO = new InventoryReservationRequestDTO();

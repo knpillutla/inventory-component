@@ -7,19 +7,19 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@Builder
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@NoArgsConstructor
+@Data
 public class InventoryCreatedEvent extends BaseEvent{
-	private static final long serialVersionUID = 1L;
+	private static String EVENT_NAME = "InSufficientInventoryEvent";
 	public List<InventoryDTO> inventoryDTOList;
 	
 	public InventoryCreatedEvent(List<InventoryDTO> inventoryDTOList) {
-		super("InventoryCreatedEvent");
+		super(EVENT_NAME);
 		this.inventoryDTOList = inventoryDTOList;
 		if(inventoryDTOList.size()>0) {
 			this.addHeader("locnNbr",inventoryDTOList.get(0).getLocnNbr());

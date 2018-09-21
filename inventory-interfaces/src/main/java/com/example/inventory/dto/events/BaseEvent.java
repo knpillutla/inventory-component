@@ -1,26 +1,20 @@
 package com.example.inventory.dto.events;
 
 import com.example.inventory.dto.BaseDTO;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@NoArgsConstructor
 @Data
 public class BaseEvent extends BaseDTO{
-	public String eventName = "Event";
-	public String errorMsg = "";
-	public Object requestObj;
-	public Object errorObj;
-	public BaseEvent() {};
+	public String eventName;
 	public BaseEvent(String name) {
 		eventName = name;
 	}
-	public BaseEvent(String name, Object requestObj) {
-		eventName = name;
-		this.requestObj = requestObj;
-	}
-	public BaseEvent(String name, Object requestObj, Object errorObj, String errorMsg) {
-		eventName = name;
-		this.requestObj = requestObj;
-		this.errorObj = errorObj;
-	}	
 }

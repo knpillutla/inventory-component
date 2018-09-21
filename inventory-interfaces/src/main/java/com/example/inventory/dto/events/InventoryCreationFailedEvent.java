@@ -7,15 +7,21 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@Builder
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class InventoryCreationFailedEvent extends BaseEvent{
-	public InventoryCreationFailedEvent(List<InventoryCreationRequestDTO>invnResvReqList, InventoryCreationRequestDTO failedReq, String errorMsg) {
-		super("InventoryCreationFailedEvent", invnResvReqList, failedReq, errorMsg);
+@NoArgsConstructor
+@Data
+public class InventoryCreationFailedEvent extends ExceptionEvent{
+	private static String EVENT_NAME = "InventoryCreationFailedEvent";
+	List<InventoryCreationRequestDTO>invnCrationReqList;
+	InventoryCreationRequestDTO failedReq;
+	
+	public InventoryCreationFailedEvent(List<InventoryCreationRequestDTO>invnCrationReqList, InventoryCreationRequestDTO failedReq, String errorMsg) {
+		super(EVENT_NAME, errorMsg);
+		invnCrationReqList = invnCrationReqList;
+		failedReq = failedReq;
 	}
 }
