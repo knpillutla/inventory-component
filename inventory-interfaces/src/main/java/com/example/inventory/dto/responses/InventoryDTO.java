@@ -3,9 +3,17 @@ package com.example.inventory.dto.responses;
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-@Data
+import lombok.Builder;
+import lombok.Value;
+
+@Value
+@Builder
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class InventoryDTO  implements Serializable{
 	Long id;
 	Integer locnNbr;

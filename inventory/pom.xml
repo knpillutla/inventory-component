@@ -22,7 +22,8 @@
 		    <groupId>com.example.wms</groupId>
 		    <artifactId>order-interfaces</artifactId>
 		    <version>0.0.1-SNAPSHOT</version>
-		</dependency>			<dependency>
+		</dependency>
+		<dependency>
 		    <groupId>com.example.wms</groupId>
 		    <artifactId>inventory-interfaces</artifactId>
 		    <version>${version}</version>

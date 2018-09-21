@@ -1,12 +1,19 @@
 package com.example.inventory.dto.requests;
 
 import com.example.inventory.dto.BaseDTO;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
+@Value
+@Builder
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class InventoryCreationRequestDTO extends BaseDTO{
-	public Integer busName;
+	public String busName;
 	public Integer locnNbr;
 	public String busUnit;
 	public String company;
@@ -18,9 +25,7 @@ public class InventoryCreationRequestDTO extends BaseDTO{
 	public boolean trackByLPN;
 	public String userId;
 
-	public InventoryCreationRequestDTO() {}
-	
-	public InventoryCreationRequestDTO(Integer busName, Integer locnNbr, String busUnit, String company,
+	public InventoryCreationRequestDTO(String busName, Integer locnNbr, String busUnit, String company,
 			String division, String locnBrcd, String itemBrcd, Integer qty, String ilpn, boolean trackByLPN,
 			String userId) {
 		super();

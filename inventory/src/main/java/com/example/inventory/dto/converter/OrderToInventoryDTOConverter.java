@@ -18,7 +18,7 @@ public class OrderToInventoryDTOConverter {
 		ObjectMapper mapper = new ObjectMapper();
 		OrderDTO orderDTO = mapper.convertValue(orderCreatedEvent.getRequestObj(), OrderDTO.class);
 		List<InventoryReservationRequestDTO> invnResvReqList = new ArrayList();
-		for(OrderLineDTO orderLineDTO : orderDTO.getOrderLines()) {
+/*		for(OrderLineDTO orderLineDTO : orderDTO.getOrderLines()) {
 			InventoryReservationRequestDTO invResvReqDTO = new InventoryReservationRequestDTO();
 			invResvReqDTO.setLocnNbr(orderDTO.getLocnNbr());
 			invResvReqDTO.setBusUnit(orderDTO.getBusUnit());
@@ -29,6 +29,6 @@ public class OrderToInventoryDTOConverter {
 			invResvReqDTO.setUserId(orderDTO.getUpdatedBy());
 			invnResvReqList.add(invResvReqDTO);
 		}
-		return invnResvReqList;
+*/		return invnResvReqList;
 	}
 }
