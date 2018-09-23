@@ -15,17 +15,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class InventoryCreatedEvent extends BaseEvent{
-	private static String EVENT_NAME = "InSufficientInventoryEvent";
-	public List<InventoryDTO> inventoryDTOList;
+	private static String EVENT_NAME = "InventoryCreatedEvent";
+	public InventoryDTO inventoryDTO;
 	
-	public InventoryCreatedEvent(List<InventoryDTO> inventoryDTOList) {
+	public InventoryCreatedEvent(InventoryDTO inventoryDTO) {
 		super(EVENT_NAME);
-		this.inventoryDTOList = inventoryDTOList;
-		if(inventoryDTOList.size()>0) {
-			this.addHeader("locnNbr",inventoryDTOList.get(0).getLocnNbr());
-			this.addHeader("locnBrcd",inventoryDTOList.get(0).getLocnBrcd());
-			this.addHeader("busUnit", inventoryDTOList.get(0).getBusUnit());
-			this.addHeader("itemBrcd", inventoryDTOList.get(0).getItemBrcd());
-		}
+		this.inventoryDTO = inventoryDTO;
+		this.addHeader("eventName", this.getEventName());
+		this.addHeader("busName", inventoryDTO.getBusName());
+		this.addHeader("locnNbr",inventoryDTO.getLocnNbr());
+		this.addHeader("locnBrcd",inventoryDTO.getLocnBrcd());
+		this.addHeader("busUnit", inventoryDTO.getBusUnit());
+		this.addHeader("itemBrcd", inventoryDTO.getItemBrcd());
 	}	
 }

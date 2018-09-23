@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @NoArgsConstructor
 @Data
-public class InventoryReservationRequestDTO  extends BaseDTO{
-	public Integer busName;
+public class InventoryAllocationRequestDTO  extends BaseDTO{
+	public Long orderLineId;
+	public Long orderId;
+	public String busName;
 	public Integer locnNbr;
 	public String busUnit;
 	public String company;
@@ -27,10 +29,12 @@ public class InventoryReservationRequestDTO  extends BaseDTO{
 	private String packageNbr;
 	private String userId;
 
-	public InventoryReservationRequestDTO(Integer busName, Integer locnNbr, String busUnit, String company,
+	public InventoryAllocationRequestDTO(Long orderLineId, Long orderId, String busName, Integer locnNbr, String busUnit, String company,
 			String division, String locnBrcd, String itemBrcd, String ilpn, Integer qty, String batchNbr,
 			String orderNbr, String packageNbr, String userId) {
 		super();
+		this.orderLineId = orderLineId;
+		this.orderId = orderId;
 		this.busName = busName;
 		this.locnNbr = locnNbr;
 		this.busUnit = busUnit;

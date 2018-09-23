@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.esotericsoftware.minlog.Log;
 import com.example.inventory.dto.events.InventoryCreationFailedEvent;
 import com.example.inventory.dto.requests.InventoryCreationRequestDTO;
-import com.example.inventory.dto.requests.InventoryReservationRequestDTO;
+import com.example.inventory.dto.requests.InventoryAllocationRequestDTO;
 import com.example.inventory.exception.InventoryException;
 import com.example.inventory.service.InventoryServiceByItem;
 
@@ -58,9 +58,9 @@ public class InventoryRestEndPoint {
 	}
 
 	@PostMapping("/{locnNbr}/picks/{id}")
-	public ResponseEntity reserveInventory(@PathVariable("locnNbr") Integer locnNbr, @RequestBody List<InventoryReservationRequestDTO> invnResvReqList) throws IOException {
+	public ResponseEntity reserveInventory(@PathVariable("locnNbr") Integer locnNbr, @RequestBody InventoryAllocationRequestDTO invnAllocationReq) throws IOException {
 		try {
-			return ResponseEntity.ok(invnService.reserveInventory(invnResvReqList));
+			return ResponseEntity.ok(invnService.allocateInventory(invnAllocationReq));
 		}catch (InventoryException ex) {
 			log.error("ReserveInventory Error:", ex.getEvent(), ex);
 			return ResponseEntity.badRequest().body(ex.getEvent());
@@ -68,18 +68,18 @@ public class InventoryRestEndPoint {
 	}	
 	
 	@PutMapping("/{locnNbr}/inventory")
-	public ResponseEntity createInventory(@PathVariable("locnNbr") Integer locnNbr, @RequestBody List<InventoryCreationRequestDTO> invnCreationReqList) throws IOException {
+	public ResponseEntity createInventory(@PathVariable("locnNbr") Integer locnNbr, @RequestBody InventoryCreationRequestDTO invnCreationReq) throws IOException {
 		long startTime = System.currentTimeMillis();
-		log.info("Received Inventory Create request for : " + invnCreationReqList.toString() + ": at :" + new java.util.Date());
+		log.info("Received Inventory Create request for : " + invnCreationReq.toString() + ": at :" + new java.util.Date());
 		ResponseEntity resEntity = null;
 		try {
-			resEntity = ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(invnService.createInventory(invnCreationReqList));
+			resEntity = ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(invnService.createInventory(invnCreationReq));
 		} catch (InventoryException ex) {
 			log.error("CreateInventory Error:", ex.getEvent(), ex);
 			resEntity = ResponseEntity.badRequest().body(ex.getEvent());
 		}
 		long endTime = System.currentTimeMillis();
-		log.info("Completed Inventory Create request for : " + invnCreationReqList.toString() + ": at :" + new java.util.Date() + " : total time:" + (endTime-startTime)/1000.00 + " secs");
+		log.info("Completed Inventory Create request for : " + invnCreationReq.toString() + ": at :" + new java.util.Date() + " : total time:" + (endTime-startTime)/1000.00 + " secs");
 		return resEntity;
 	}	
 }

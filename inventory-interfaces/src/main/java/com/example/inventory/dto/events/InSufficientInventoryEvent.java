@@ -2,7 +2,7 @@ package com.example.inventory.dto.events;
 
 import java.util.List;
 
-import com.example.inventory.dto.requests.InventoryReservationRequestDTO;
+import com.example.inventory.dto.requests.InventoryAllocationRequestDTO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,12 +16,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class InSufficientInventoryEvent extends ExceptionEvent{
 	private static String EVENT_NAME = "InSufficientInventoryEvent";
-	List<InventoryReservationRequestDTO>invnResvReqList;
-	InventoryReservationRequestDTO failedReq;
+	InventoryAllocationRequestDTO allocationReq;
 	
-	public InSufficientInventoryEvent(List<InventoryReservationRequestDTO>invnResvReqList, InventoryReservationRequestDTO failedReq, String errorMsg) {
+	public InSufficientInventoryEvent(InventoryAllocationRequestDTO failedReq, String errorMsg) {
 		super(EVENT_NAME, errorMsg);
-		invnResvReqList = invnResvReqList;
-		failedReq = failedReq;
+		allocationReq = failedReq;
 	}
 }

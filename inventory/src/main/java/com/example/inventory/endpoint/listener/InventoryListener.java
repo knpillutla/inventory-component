@@ -1,13 +1,13 @@
 package com.example.inventory.endpoint.listener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
+import com.example.inventory.dto.converter.ASNUPCToInventoryConverter;
 import com.example.inventory.dto.converter.OrderToInventoryDTOConverter;
+import com.example.inventory.dto.events.ASNUPCReceivedEvent;
+import com.example.inventory.dto.requests.InventoryAllocationRequestDTO;
 import com.example.inventory.dto.requests.InventoryCreationRequestDTO;
 import com.example.inventory.service.InventoryService;
 import com.example.inventory.streams.InventoryStreams;
@@ -23,39 +23,55 @@ public class InventoryListener {
 
 	@Autowired
 	OrderToInventoryDTOConverter orderToInvnConvertor;
-	
-	@StreamListener(InventoryStreams.ORDERS_OUTPUT)
+
+	@StreamListener(target=InventoryStreams.ORDERS_OUTPUT, condition = "headers['eventName']=='OrderCreatedEvent'")
 	public void handleIncomingOrders(OrderCreatedEvent orderCreatedEvent) {
-		log.info("Inventory Service, Received Msg: {}" + ": at :" + new java.util.Date(), orderCreatedEvent.toString());
+		log.info("Received OrderCreatedEvent, Allocation of Inventory Started: {}" + ": at :" + new java.util.Date(), orderCreatedEvent.toString());
 		long startTime = System.currentTimeMillis();
-		try {
-			inventoryService.reserveInventory(orderToInvnConvertor.createInvResvReq(orderCreatedEvent));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			log.error("Error occured while processing Incoming orders :" + e.getMessage(), e);
+		for (InventoryAllocationRequestDTO orderLineAllocationReq : orderToInvnConvertor
+				.createInvAllocReq(orderCreatedEvent)) {
+			try {
+				inventoryService.allocateInventory(orderLineAllocationReq);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.error("OrderLine Allocation Failed for OrderCreatedEvent, orderLineInfo :" + orderLineAllocationReq + "," + e.getMessage(), e);
+			}
 		}
 		long endTime = System.currentTimeMillis();
-		log.info("Completed Inventory Creation for Order for : " + orderCreatedEvent + ": at :" + new java.util.Date()
-				+ " : total time:" + (endTime - startTime) / 1000.00 + " secs");
+		log.info("Completed Allocation of Inventory for OrderCreatedEvent : " + orderCreatedEvent + ": at :"
+				+ new java.util.Date() + " : total time:" + (endTime - startTime) / 1000.00 + " secs");
 	}
 
-	@StreamListener(InventoryStreams.INVENTORY_INPUT)
-	public void handleNewInventory(InventoryCreationRequestDTO inventoryCreationReqDTO) {
-		log.info("Inventory Service, Received Msg: {}" + ": at :" + new java.util.Date(), inventoryCreationReqDTO.toString());
+	@StreamListener(target=InventoryStreams.INVENTORY_INPUT,condition = "headers['eventName']=='ASNUPCReceivedEvent'")
+	public void handleUPCReceipt(ASNUPCReceivedEvent upcReceivedEvent) {
+		log.info("ASNUPC Received: {}" + ": at :" + new java.util.Date(),
+				upcReceivedEvent);
 		long startTime = System.currentTimeMillis();
 		try {
-			List newInvnList = new ArrayList();
-			newInvnList.add(inventoryCreationReqDTO);
-			inventoryService.createInventory(newInvnList);
+			inventoryService.createInventory(ASNUPCToInventoryConverter.getInventoryCreationRequestDTO(upcReceivedEvent));
+			long endTime = System.currentTimeMillis();
+			log.info("Completed ASNUPC for : " + upcReceivedEvent + ": at :"
+					+ new java.util.Date() + " : total time:" + (endTime - startTime) / 1000.00 + " secs");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			log.error("Error occured while processing Incoming Inventory :" + e.getMessage(), e);
+			log.error("Error Completing ASNUPC for : " + upcReceivedEvent + ", Error:" + e.getMessage(), e);
 		}
-		long endTime = System.currentTimeMillis();
-		log.info("Completed Inventory Creation for Order for : " + inventoryCreationReqDTO + ": at :" + new java.util.Date()
-				+ " : total time:" + (endTime - startTime) / 1000.00 + " secs");
 	}
-
-}
+/*
+	@StreamListener(target=InventoryStreams.INVENTORY_INPUT,condition = "headers['eventName']=='ASNUPCReceivedEvent'")
+	public void handleNewInventory(InventoryCreationRequestDTO invnCreationReq) {
+		log.info("InventoryCreationRequest Received: {}" + ": at :" + new java.util.Date(),
+				invnCreationReq);
+		long startTime = System.currentTimeMillis();
+		try {
+			inventoryService.createInventory(invnCreationReq);
+			long endTime = System.currentTimeMillis();
+			log.info("Completed InventoryCreationRequest for : " + invnCreationReq + ": at :"
+					+ new java.util.Date() + " : total time:" + (endTime - startTime) / 1000.00 + " secs");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Error Completing InventoryCreationRequest for : " + invnCreationReq + ", Error:" + e.getMessage(), e);
+		}
+	}
+*/}

@@ -13,6 +13,7 @@ public class InventoryDTOConverter {
 	
 	public Inventory getInventoryEntity(InventoryCreationRequestDTO invnCreationReq) {
 		Inventory inventoryEntity = new Inventory();
+		inventoryEntity.setBusName(invnCreationReq.getBusName());
 		inventoryEntity.setLocnNbr(invnCreationReq.getLocnNbr());
 		inventoryEntity.setBusUnit(invnCreationReq.getBusUnit());
 		inventoryEntity.setLocnBrcd(invnCreationReq.getLocnBrcd());
@@ -22,15 +23,12 @@ public class InventoryDTOConverter {
 		inventoryEntity.setQty(invnCreationReq.isTrackByLPN()?1:invnCreationReq.getQty());
 		inventoryEntity.setCreatedBy(invnCreationReq.getUserId());
 		inventoryEntity.setUpdatedBy(invnCreationReq.getUserId());
-		Date pickCreationDate = new Date();
-		inventoryEntity.setCreatedDttm(pickCreationDate);
-		inventoryEntity.setUpdatedDttm(pickCreationDate);
 		return inventoryEntity;
 	}
 
 	public InventoryDTO getInventoryDTO(Inventory invnEntity) {
 		if (invnEntity != null) {
-			InventoryDTO inventoryDTO = new InventoryDTO(invnEntity.getId(), invnEntity.getLocnNbr(),
+			InventoryDTO inventoryDTO = new InventoryDTO(invnEntity.getId(), invnEntity.getBusName(), invnEntity.getLocnNbr(),
 					invnEntity.getBusUnit(), invnEntity.getLocnBrcd(), invnEntity.getItemBrcd(), invnEntity.getQty(),
 					invnEntity.getStatCode(), invnEntity.getIlpn(), invnEntity.getBatchNbr(), invnEntity.getOrderNbr(),
 					invnEntity.getOlpn(), invnEntity.getTransitContainerNbr(), invnEntity.getSource(),

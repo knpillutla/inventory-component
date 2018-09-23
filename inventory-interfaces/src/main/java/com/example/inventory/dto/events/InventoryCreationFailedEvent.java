@@ -16,12 +16,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class InventoryCreationFailedEvent extends ExceptionEvent{
 	private static String EVENT_NAME = "InventoryCreationFailedEvent";
-	List<InventoryCreationRequestDTO>invnCrationReqList;
-	InventoryCreationRequestDTO failedReq;
+	InventoryCreationRequestDTO inventoryCreationRequestDTO;
 	
-	public InventoryCreationFailedEvent(List<InventoryCreationRequestDTO>invnCrationReqList, InventoryCreationRequestDTO failedReq, String errorMsg) {
+	public InventoryCreationFailedEvent(InventoryCreationRequestDTO inventoryCreationRequestDTO, String errorMsg) {
 		super(EVENT_NAME, errorMsg);
-		invnCrationReqList = invnCrationReqList;
-		failedReq = failedReq;
+		inventoryCreationRequestDTO = inventoryCreationRequestDTO;
 	}
 }

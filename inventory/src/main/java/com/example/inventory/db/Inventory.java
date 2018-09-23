@@ -21,6 +21,9 @@ public class Inventory  implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 
+	@Column(name="BUS_NAME")
+	String busName;
+
 	@Column(name="LOCN_NBR")
 	Integer locnNbr;
 

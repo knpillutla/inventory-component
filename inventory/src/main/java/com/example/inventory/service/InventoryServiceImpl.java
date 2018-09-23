@@ -11,14 +11,13 @@ import com.example.inventory.db.Inventory;
 import com.example.inventory.db.InventoryRepository;
 import com.example.inventory.dto.converter.InventoryDTOConverter;
 import com.example.inventory.dto.events.InSufficientInventoryEvent;
+import com.example.inventory.dto.events.InventoryAllocatedEvent;
+import com.example.inventory.dto.events.InventoryAllocationFailedEvent;
 import com.example.inventory.dto.events.InventoryCreatedEvent;
 import com.example.inventory.dto.events.InventoryCreationFailedEvent;
-import com.example.inventory.dto.events.InventoryReservationFailedEvent;
-import com.example.inventory.dto.events.InventoryStagedEvent;
+import com.example.inventory.dto.requests.InventoryAllocationRequestDTO;
 import com.example.inventory.dto.requests.InventoryCreationRequestDTO;
-import com.example.inventory.dto.requests.InventoryReservationRequestDTO;
 import com.example.inventory.dto.responses.InventoryDTO;
-import com.example.inventory.exception.InsufficientInventoryException;
 import com.example.inventory.exception.InventoryException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,7 @@ public abstract class InventoryServiceImpl implements InventoryService {
 	InventoryDTOConverter inventoryDTOConverter;
 
 	public enum InventoryStatus {
-		STAGED(100), AVAILABLE(110), RESERVED(120), PICKED(130), PACKED(140), CYCLECOUNT(150), SHIPPED(160);
+		LOCKED(100), AVAILABLE(110), ALLOCATED(120), PICKED(130), PACKED(140), CYCLECOUNT(150), SHIPPED(160);
 		InventoryStatus(Integer statCode) {
 			this.statCode = statCode;
 		}
@@ -49,36 +48,31 @@ public abstract class InventoryServiceImpl implements InventoryService {
 	}
 
 	@Override
-	public List<InventoryDTO> reserveInventory(List<InventoryReservationRequestDTO> invnResvRequestList)
+	@Transactional
+	public List<InventoryDTO> allocateInventory(InventoryAllocationRequestDTO invnAllocationReq)
 			throws InventoryException {
 		List<InventoryDTO> invnDTOList = new ArrayList();
-		for (InventoryReservationRequestDTO invnResvRequest : invnResvRequestList) {
-			try {
-				invnDTOList.addAll(this.reserveInventory(invnResvRequest));
-			} catch (InventoryException ex) {
-				InSufficientInventoryEvent event = new InSufficientInventoryEvent(invnResvRequestList, invnResvRequest,
-						"Insufficient Inventory Reservation Error:" + ex.getMessage());
-				InventoryException invException = new InventoryException(event);
-				eventPublisher.publish(event);
-				throw invException;
-			} catch (Exception ex) {
-				InventoryReservationFailedEvent event = new InventoryReservationFailedEvent(invnResvRequestList,
-						invnResvRequest, "Inventory Reservation Error:" + ex.getMessage());
-				InventoryException invException = new InventoryException(event);
-				eventPublisher.publish(event);
-				throw invException;
+		try {
+			List<Inventory> invnList = this.getInventoryToBeAllocated(invnAllocationReq);
+			for (Inventory invn : invnList) {
+				invnDTOList.add(inventoryDTOConverter.getInventoryDTO(inventoryDAO.save(invn)));
 			}
-		}
-		return invnDTOList;
-	}
-
-	public List<InventoryDTO> reserveInventory(InventoryReservationRequestDTO invnResvRequest)
-			throws Exception {
-
-		List<InventoryDTO> invnDTOList = new ArrayList();
-		List<Inventory> invnList = this.getInventory(invnResvRequest);
-		for (Inventory invn : invnList) {
-			invnDTOList.add(inventoryDTOConverter.getInventoryDTO(inventoryDAO.save(invn)));
+			eventPublisher.publish(new InventoryAllocatedEvent(invnAllocationReq.getOrderLineId(),
+					invnAllocationReq.getOrderId(), invnAllocationReq.getOrderNbr(), invnAllocationReq.getBusName(),
+					invnAllocationReq.getLocnNbr(), invnAllocationReq.getBusUnit(), invnAllocationReq.getItemBrcd(),
+					invnAllocationReq.getQty(), invnDTOList));
+		} catch (InventoryException ex) {
+			InSufficientInventoryEvent event = new InSufficientInventoryEvent(invnAllocationReq,
+					"Insufficient Inventory for Allocation Error:" + ex.getMessage());
+			InventoryException invException = new InventoryException(event);
+			eventPublisher.publish(event);
+			throw invException;
+		} catch (Exception ex) {
+			InventoryAllocationFailedEvent event = new InventoryAllocationFailedEvent(invnAllocationReq,
+					"Inventory Allocation Error:" + ex.getMessage());
+			InventoryException invException = new InventoryException(event);
+			eventPublisher.publish(event);
+			throw invException;
 		}
 		return invnDTOList;
 	}
@@ -87,7 +81,8 @@ public abstract class InventoryServiceImpl implements InventoryService {
 	 * (non-Javadoc)
 	 * 
 	 */
-	public abstract List<Inventory> getInventory(InventoryReservationRequestDTO invnResvRequest) throws Exception;
+	public abstract List<Inventory> getInventoryToBeAllocated(InventoryAllocationRequestDTO invnResvRequest)
+			throws Exception;
 
 	/*
 	 * (non-Javadoc)
@@ -95,39 +90,24 @@ public abstract class InventoryServiceImpl implements InventoryService {
 	 */
 	@Override
 	@Transactional
-	public List<InventoryDTO> createInventory(List<InventoryCreationRequestDTO> invnCreationReqList)
-			throws InventoryException {
-		List<InventoryDTO> inventoryDTOList = new ArrayList();
-		for (InventoryCreationRequestDTO invnCreationReq : invnCreationReqList) {
-			try {
-				InventoryDTO inventoryDTO = this.createInventory(invnCreationReq, false);
-				inventoryDTOList.add(inventoryDTO);
-			} catch (Exception ex) {
-				log.error("Inventory Creation Error:" + ex.getMessage(), ex);
-				InventoryCreationFailedEvent event = new InventoryCreationFailedEvent(invnCreationReqList,
-						invnCreationReq, "Inventory Creation Error:" + ex.getMessage());
-				InventoryException invException = new InventoryException(event);
-				eventPublisher.publish(event);
-				throw invException;
-
-			}
-			eventPublisher.publish(new InventoryCreatedEvent(inventoryDTOList));
-		}
-		return inventoryDTOList;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 */
-	private InventoryDTO createInventory(InventoryCreationRequestDTO invnCreationReq, boolean stage)
-			throws InventoryException {
+	public InventoryDTO createInventory(InventoryCreationRequestDTO invnCreationReq) throws InventoryException {
 		InventoryDTO inventoryDTO = null;
-		Inventory newInventory = inventoryDTOConverter.getInventoryEntity(invnCreationReq);
-		newInventory
-				.setStatCode(stage ? InventoryStatus.STAGED.getStatCode() : InventoryStatus.AVAILABLE.getStatCode());
-		Inventory savedInventoryObj = inventoryDAO.save(newInventory);
-		inventoryDTO = inventoryDTOConverter.getInventoryDTO(savedInventoryObj);
+		try {
+			Inventory newInventory = inventoryDTOConverter.getInventoryEntity(invnCreationReq);
+			newInventory.setStatCode(invnCreationReq.isLocked() ? InventoryStatus.LOCKED.getStatCode()
+					: InventoryStatus.AVAILABLE.getStatCode());
+			Inventory savedInventoryObj = inventoryDAO.save(newInventory);
+			inventoryDTO = inventoryDTOConverter.getInventoryDTO(savedInventoryObj);
+		} catch (Exception ex) {
+			log.error("Inventory Creation Error:" + ex.getMessage(), ex);
+			InventoryCreationFailedEvent event = new InventoryCreationFailedEvent(invnCreationReq,
+					"Inventory Creation Error:" + ex.getMessage());
+			InventoryException invException = new InventoryException(event);
+			eventPublisher.publish(event);
+			throw invException;
+
+		}
+		eventPublisher.publish(new InventoryCreatedEvent(inventoryDTO));
 		return inventoryDTO;
 	}
 
