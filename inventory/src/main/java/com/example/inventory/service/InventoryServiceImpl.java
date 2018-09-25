@@ -56,11 +56,11 @@ public abstract class InventoryServiceImpl implements InventoryService {
 			List<Inventory> invnList = this.getInventoryToBeAllocated(invnAllocationReq);
 			for (Inventory invn : invnList) {
 				invnDTOList.add(inventoryDTOConverter.getInventoryDTO(inventoryDAO.save(invn)));
+				eventPublisher.publish(new InventoryAllocatedEvent(invnAllocationReq.getOrderLineId(),
+						invnAllocationReq.getOrderId(), invnAllocationReq.getOrderNbr(), invnAllocationReq.getOrderLineNbr(), invnAllocationReq.getBusName(),
+						invnAllocationReq.getLocnNbr(), invnAllocationReq.getBusUnit(), invnAllocationReq.getItemBrcd(),
+						invn.getLocnBrcd(), invn.getQty(), invnAllocationReq.getUserId(), invnDTOList));
 			}
-			eventPublisher.publish(new InventoryAllocatedEvent(invnAllocationReq.getOrderLineId(),
-					invnAllocationReq.getOrderId(), invnAllocationReq.getOrderNbr(), invnAllocationReq.getBusName(),
-					invnAllocationReq.getLocnNbr(), invnAllocationReq.getBusUnit(), invnAllocationReq.getItemBrcd(),
-					invnAllocationReq.getQty(), invnDTOList));
 		} catch (InventoryException ex) {
 			InSufficientInventoryEvent event = new InSufficientInventoryEvent(invnAllocationReq,
 					"Insufficient Inventory for Allocation Error:" + ex.getMessage());

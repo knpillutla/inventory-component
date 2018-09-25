@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class InventoryAllocationRequestDTO  extends BaseDTO{
 	public Long orderLineId;
 	public Long orderId;
+	public Integer orderLineNbr;
 	public String busName;
 	public Integer locnNbr;
 	public String busUnit;
@@ -31,7 +32,7 @@ public class InventoryAllocationRequestDTO  extends BaseDTO{
 
 	public InventoryAllocationRequestDTO(Long orderLineId, Long orderId, String busName, Integer locnNbr, String busUnit, String company,
 			String division, String locnBrcd, String itemBrcd, String ilpn, Integer qty, String batchNbr,
-			String orderNbr, String packageNbr, String userId) {
+			String orderNbr, Integer orderLineNbr, String packageNbr, String userId) {
 		super();
 		this.orderLineId = orderLineId;
 		this.orderId = orderId;
@@ -46,6 +47,7 @@ public class InventoryAllocationRequestDTO  extends BaseDTO{
 		this.qty = qty;
 		this.batchNbr = batchNbr;
 		this.orderNbr = orderNbr;
+		this.orderLineNbr=orderLineNbr;
 		this.packageNbr = packageNbr;
 		this.userId = userId;
 	}
