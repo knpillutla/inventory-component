@@ -26,11 +26,12 @@ public class InventoryAllocatedEvent extends BaseEvent{
 	Integer qty;
 	String userId;
 	String locnBrcd;
+	String batchNbr;
 	
 	List<InventoryDTO> inventoryDTOList;
 	
 	public InventoryAllocatedEvent(Long orderLineId, Long orderId,String orderNbr, Integer orderLineNbr, String busName, Integer locnNbr,
-			String busUnit, String itemBrcd, String locnBrcd, Integer qty, String userId, List<InventoryDTO> inventoryDTOList) {
+			String busUnit, String itemBrcd, String locnBrcd, Integer qty, String userId, String batchNbr, List<InventoryDTO> inventoryDTOList) {
 		super(EVENT_NAME);
 		this.orderLineId = orderLineId;
 		this.orderId = orderId;
@@ -43,6 +44,7 @@ public class InventoryAllocatedEvent extends BaseEvent{
 		this.locnBrcd = locnBrcd;
 		this.userId = userId;
 		this.orderLineNbr = orderLineNbr;
+		this.batchNbr = batchNbr;
 		this.inventoryDTOList = inventoryDTOList;
 		this.addHeader("eventName", this.getEventName());
 		this.addHeader("busName", this.getBusName());

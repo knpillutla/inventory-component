@@ -59,7 +59,7 @@ public abstract class InventoryServiceImpl implements InventoryService {
 				eventPublisher.publish(new InventoryAllocatedEvent(invnAllocationReq.getOrderLineId(),
 						invnAllocationReq.getOrderId(), invnAllocationReq.getOrderNbr(), invnAllocationReq.getOrderLineNbr(), invnAllocationReq.getBusName(),
 						invnAllocationReq.getLocnNbr(), invnAllocationReq.getBusUnit(), invnAllocationReq.getItemBrcd(),
-						invn.getLocnBrcd(), invn.getQty(), invnAllocationReq.getUserId(), invnDTOList));
+						invn.getLocnBrcd(), invn.getQty(), invnAllocationReq.getUserId(), invnAllocationReq.getBatchNbr(), invnDTOList));
 			}
 		} catch (InventoryException ex) {
 			InSufficientInventoryEvent event = new InSufficientInventoryEvent(invnAllocationReq,

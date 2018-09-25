@@ -8,10 +8,9 @@ import com.example.inventory.dto.converter.ASNUPCToInventoryConverter;
 import com.example.inventory.dto.converter.OrderToInventoryDTOConverter;
 import com.example.inventory.dto.events.ASNUPCReceivedEvent;
 import com.example.inventory.dto.requests.InventoryAllocationRequestDTO;
-import com.example.inventory.dto.requests.InventoryCreationRequestDTO;
 import com.example.inventory.service.InventoryService;
 import com.example.inventory.streams.InventoryStreams;
-import com.example.order.dto.events.OrderCreatedEvent;
+import com.example.order.dto.events.OrderPlannedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,22 +23,22 @@ public class InventoryListener {
 	@Autowired
 	OrderToInventoryDTOConverter orderToInvnConvertor;
 
-	@StreamListener(target=InventoryStreams.ORDERS_OUTPUT, condition = "headers['eventName']=='OrderCreatedEvent'")
-	public void handleIncomingOrders(OrderCreatedEvent orderCreatedEvent) {
-		log.info("Received OrderCreatedEvent, Allocation of Inventory Started: {}" + ": at :" + new java.util.Date(), orderCreatedEvent.toString());
+	@StreamListener(target=InventoryStreams.ORDERS_OUTPUT, condition = "headers['eventName']=='OrderPlannedEvent'")
+	public void handleIncomingOrders(OrderPlannedEvent orderPlannedEvent) {
+		log.info("Received OrderPlannedEvent, Allocation of Inventory Started: {}" + ": at :" + new java.util.Date(), orderPlannedEvent.toString());
 		long startTime = System.currentTimeMillis();
 		for (InventoryAllocationRequestDTO orderLineAllocationReq : orderToInvnConvertor
-				.createInvAllocReq(orderCreatedEvent)) {
+				.createInvAllocReq(orderPlannedEvent)) {
 			try {
 				inventoryService.allocateInventory(orderLineAllocationReq);
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.error("OrderLine Allocation Failed for OrderCreatedEvent, orderLineInfo :" + orderLineAllocationReq + "," + e.getMessage(), e);
+				log.error("OrderLine Allocation Failed for OrderPlannedEvent, orderLineInfo :" + orderLineAllocationReq + "," + e.getMessage(), e);
 			}
 		}
 		long endTime = System.currentTimeMillis();
-		log.info("Completed Allocation of Inventory for OrderCreatedEvent : " + orderCreatedEvent + ": at :"
+		log.info("Completed Allocation of Inventory for OrderPlannedEvent : " + orderPlannedEvent + ": at :"
 				+ new java.util.Date() + " : total time:" + (endTime - startTime) / 1000.00 + " secs");
 	}
 
