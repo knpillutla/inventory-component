@@ -48,11 +48,17 @@ public class Inventory  implements Serializable{
 	@Column(name="BATCH_NBR")
 	String batchNbr;
 
+	@Column(name="PACKAGE_NBR")
+	String packageNbr;
+
 	@Column(name="ORDER_NBR")
 	String orderNbr;
 
-	@Column(name="OLPN")
-	String olpn;
+	@Column(name="ORDER_LINE_NBR")
+	Integer orderLineNbr;
+
+	@Column(name="ORDER_ID")
+	Long orderId;
 	
 	@Column(name="TRANSIT_CONTAINER_NBR")
 	String transitContainerNbr;

@@ -21,13 +21,15 @@ public class OrderToInventoryDTOConverter {
 		for(OrderLineDTO orderLineDTO : orderDTO.getOrderLines()) {
 			InventoryAllocationRequestDTO invAllocReqDTO = new InventoryAllocationRequestDTO();
 			invAllocReqDTO.setOrderLineId(orderLineDTO.getId());
-			invAllocReqDTO.setOrderId(orderLineDTO.getOrderId());
+			invAllocReqDTO.setOrderId(orderDTO.getId());
 			invAllocReqDTO.setBusName(orderDTO.getBusName());
 			invAllocReqDTO.setLocnNbr(orderDTO.getLocnNbr());
 			invAllocReqDTO.setBusUnit(orderDTO.getBusUnit());
 			invAllocReqDTO.setItemBrcd(orderLineDTO.getItemBrcd());
 			invAllocReqDTO.setOrderNbr(orderDTO.getOrderNbr());
 			invAllocReqDTO.setBatchNbr(orderDTO.getBatchNbr());
+			invAllocReqDTO.setOrderLineNbr(orderLineDTO.getOrderLineNbr());
+			//invAllocReqDTO.setPackageNbr(orderDTO.getP);	
 //			invResvReqDTO.setIlpn(orderLineDTO.get.getIlpn());
 //			invResvReqDTO.setTrackByLPN(orderDTO..isTrackByLPN()?"Y":"N");
 			invAllocReqDTO.setQty(orderLineDTO.getOrderQty());

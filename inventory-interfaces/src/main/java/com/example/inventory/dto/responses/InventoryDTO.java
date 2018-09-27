@@ -29,6 +29,8 @@ public class InventoryDTO  implements Serializable{
 	String waveNbr;
 	String orderNbr;
 	String packageNbr;
+	Long orderId;
+	Integer orderLineNbr;
 	String transitContainerNbr;
 	String source;
 	String transactionName;

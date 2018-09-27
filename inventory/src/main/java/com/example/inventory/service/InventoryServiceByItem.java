@@ -47,7 +47,9 @@ public class InventoryServiceByItem extends InventoryServiceImpl {
 				newInventory.setQty(qtyReserved);
 				newInventory.setBatchNbr(invn.getBatchNbr());
 				newInventory.setOrderNbr(invn.getOrderNbr());
-				newInventory.setOlpn(invn.getOlpn());
+				newInventory.setOrderLineNbr(invn.getOrderLineNbr());
+				newInventory.setOrderId(invn.getOrderId());
+				newInventory.setPackageNbr(invn.getPackageNbr());
 				newInventory.setCreatedBy(invn.getCreatedBy());
 				newInventory.setUpdatedBy(invnAllocationRequest.getUserId());
 				Date creationDate = new Date();

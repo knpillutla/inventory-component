@@ -31,7 +31,7 @@ public class InventoryDTOConverter {
 			InventoryDTO inventoryDTO = new InventoryDTO(invnEntity.getId(), invnEntity.getBusName(), invnEntity.getLocnNbr(),
 					invnEntity.getBusUnit(), invnEntity.getLocnBrcd(), invnEntity.getItemBrcd(), invnEntity.getQty(),
 					invnEntity.getStatCode(), invnEntity.getIlpn(), invnEntity.getBatchNbr(), invnEntity.getOrderNbr(),
-					invnEntity.getOlpn(), invnEntity.getTransitContainerNbr(), invnEntity.getSource(),
+					invnEntity.getPackageNbr(), invnEntity.getOrderId(), invnEntity.getOrderLineNbr(), invnEntity.getTransitContainerNbr(), invnEntity.getSource(),
 					invnEntity.getTransactionName(), invnEntity.getTrackByLPN(), invnEntity.getRefField1(),
 					invnEntity.getRefField2(), invnEntity.getUpdatedDttm(), invnEntity.getUpdatedBy());
 			return inventoryDTO;
