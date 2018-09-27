@@ -1,7 +1,5 @@
 package com.example.inventory.dto.events;
 
-import java.util.List;
-
 import com.example.inventory.dto.responses.InventoryDTO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -15,42 +13,16 @@ import lombok.NoArgsConstructor;
 @Data
 public class InventoryAllocatedEvent extends BaseEvent{
 	private static String EVENT_NAME = "InventoryAllocatedEvent";
-	Long orderLineId;
-	Long orderId;
-	String orderNbr;
-	Integer orderLineNbr;
-	String busName;
-	Integer locnNbr;
-	String busUnit;
-	String itemBrcd;
-	Integer qty;
-	String userId;
-	String locnBrcd;
-	String batchNbr;
+	InventoryDTO inventoryDTO;
 	
-	List<InventoryDTO> inventoryDTOList;
-	
-	public InventoryAllocatedEvent(Long orderLineId, Long orderId,String orderNbr, Integer orderLineNbr, String busName, Integer locnNbr,
-			String busUnit, String itemBrcd, String locnBrcd, Integer qty, String userId, String batchNbr, List<InventoryDTO> inventoryDTOList) {
+	public InventoryAllocatedEvent(InventoryDTO inventoryDTO) {
 		super(EVENT_NAME);
-		this.orderLineId = orderLineId;
-		this.orderId = orderId;
-		this.orderNbr = orderNbr;
-		this.busName = busName;
-		this.locnNbr = locnNbr;
-		this.busUnit = busUnit;
-		this.itemBrcd = itemBrcd;
-		this.qty = qty;
-		this.locnBrcd = locnBrcd;
-		this.userId = userId;
-		this.orderLineNbr = orderLineNbr;
-		this.batchNbr = batchNbr;
-		this.inventoryDTOList = inventoryDTOList;
+		this.inventoryDTO = inventoryDTO;
 		this.addHeader("eventName", this.getEventName());
-		this.addHeader("busName", this.getBusName());
-		this.addHeader("locnNbr",this.getLocnNbr());
-		this.addHeader("orderNbr",this.getOrderNbr());
-		this.addHeader("busUnit", this.getBusUnit());
-		this.addHeader("itemBrcd", this.getItemBrcd());
+		this.addHeader("busName", this.inventoryDTO.getBusName());
+		this.addHeader("locnNbr",this.inventoryDTO.getLocnNbr());
+		this.addHeader("orderNbr",this.inventoryDTO.getOrderNbr());
+		this.addHeader("busUnit", this.inventoryDTO.getBusUnit());
+		this.addHeader("itemBrcd", this.inventoryDTO.getItemBrcd());
 	}	
 }

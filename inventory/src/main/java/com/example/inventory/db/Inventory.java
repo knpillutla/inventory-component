@@ -60,6 +60,9 @@ public class Inventory  implements Serializable{
 	@Column(name="ORDER_ID")
 	Long orderId;
 	
+	@Column(name="ORDER_LINE_ID")
+	Long orderLineId;
+
 	@Column(name="TRANSIT_CONTAINER_NBR")
 	String transitContainerNbr;
 

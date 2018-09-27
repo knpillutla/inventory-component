@@ -31,38 +31,27 @@ public class InventoryServiceByItem extends InventoryServiceImpl {
 		for(Inventory invn : invnEntityList) {
 			int qtyReserved = 0;
 			if(invn.getQty()-qtyToBeReserved<=0) {
-				invn.setStatCode(InventoryStatus.ALLOCATED.getStatCode());
-				//Inventory savedInvnEntity = inventoryDAO.save(invn);
 				reservedEntityList.add(invn);
 				qtyReserved =  invn.getQty();
 			}else {
 				qtyReserved = qtyToBeReserved;
 				// create new inventory record for the reserved inventory
 				Inventory newInventory = new Inventory();
-				newInventory.setLocnNbr(invn.getLocnNbr());
-				newInventory.setBusUnit(invn.getBusUnit());
 				newInventory.setLocnBrcd(invn.getLocnBrcd());
 				newInventory.setItemBrcd(invn.getItemBrcd());
-				newInventory.setTrackByLPN("N");
 				newInventory.setQty(qtyReserved);
-				newInventory.setBatchNbr(invn.getBatchNbr());
-				newInventory.setOrderNbr(invn.getOrderNbr());
-				newInventory.setOrderLineNbr(invn.getOrderLineNbr());
-				newInventory.setOrderId(invn.getOrderId());
-				newInventory.setPackageNbr(invn.getPackageNbr());
-				newInventory.setCreatedBy(invn.getCreatedBy());
-				newInventory.setUpdatedBy(invnAllocationRequest.getUserId());
+				invn.setBusName(invn.getBusName());
+				invn.setBusUnit(invn.getBusUnit());
+				invn.setLocnNbr(invn.getLocnNbr());
+				invn.setIlpn(invn.getIlpn());
+				invn.setPackageNbr(invn.getPackageNbr());
+				
 				Date creationDate = new Date();
 				newInventory.setCreatedDttm(creationDate);
-				newInventory.setUpdatedDttm(creationDate);
-				newInventory.setStatCode(InventoryStatus.ALLOCATED.getStatCode());
-				//Inventory savedInventoryObj = inventoryDAO.save(newInventory);
 				reservedEntityList.add(newInventory);
 						
 				// update available qty for the current locn/item
 				invn.setQty(invn.getQty()-qtyReserved);
-				//inventoryDAO.save(invn);
-				//Inventory updatedInvnEntity = inventoryDAO.save(invn);
 				reservedEntityList.add(invn);
 				break;
 			}

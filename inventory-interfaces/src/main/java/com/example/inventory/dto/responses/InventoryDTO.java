@@ -18,6 +18,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InventoryDTO  implements Serializable{
 	Long id;
+	Long orderId;
+	Long orderLineId;
+	Integer orderLineNbr;
 	String busName;
 	Integer locnNbr;
 	String busUnit;
@@ -29,8 +32,6 @@ public class InventoryDTO  implements Serializable{
 	String waveNbr;
 	String orderNbr;
 	String packageNbr;
-	Long orderId;
-	Integer orderLineNbr;
 	String transitContainerNbr;
 	String source;
 	String transactionName;
@@ -39,4 +40,6 @@ public class InventoryDTO  implements Serializable{
 	String refField2;
 	Date updatedDttm;
 	String updatedBy;
+	String batchNbr;
+	String userId;
 }

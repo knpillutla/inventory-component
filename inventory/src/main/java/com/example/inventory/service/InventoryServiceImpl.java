@@ -55,11 +55,17 @@ public abstract class InventoryServiceImpl implements InventoryService {
 		try {
 			List<Inventory> invnList = this.getInventoryToBeAllocated(invnAllocationReq);
 			for (Inventory invn : invnList) {
-				invnDTOList.add(inventoryDTOConverter.getInventoryDTO(inventoryDAO.save(invn)));
-				eventPublisher.publish(new InventoryAllocatedEvent(invnAllocationReq.getOrderLineId(),
-						invnAllocationReq.getOrderId(), invnAllocationReq.getOrderNbr(), invnAllocationReq.getOrderLineNbr(), invnAllocationReq.getBusName(),
-						invnAllocationReq.getLocnNbr(), invnAllocationReq.getBusUnit(), invnAllocationReq.getItemBrcd(),
-						invn.getLocnBrcd(), invn.getQty(), invnAllocationReq.getUserId(), invnAllocationReq.getBatchNbr(), invnDTOList));
+				invn.setOrderId(invnAllocationReq.getOrderId());
+				invn.setOrderLineId(invnAllocationReq.getOrderLineId());
+				invn.setOrderLineNbr(invnAllocationReq.getOrderLineNbr());
+				invn.setOrderNbr(invnAllocationReq.getOrderNbr());
+				invn.setBatchNbr(invnAllocationReq.getBatchNbr());
+				invn.setItemBrcd(invnAllocationReq.getItemBrcd());
+				invn.setUpdatedDttm(new java.util.Date());
+				invn.setStatCode(InventoryStatus.ALLOCATED.getStatCode());
+				InventoryDTO inventoryDTO = inventoryDTOConverter.getInventoryDTO(inventoryDAO.save(invn));
+				invnDTOList.add(inventoryDTO);
+				eventPublisher.publish(new InventoryAllocatedEvent(inventoryDTO));
 			}
 		} catch (InventoryException ex) {
 			InSufficientInventoryEvent event = new InSufficientInventoryEvent(invnAllocationReq,
